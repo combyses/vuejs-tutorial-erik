@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vuex"></script>
+</head>
+<body>
+    <div id="app">
+       <h1>{{welcome}}</h1> 
+       <h2>{{messageReceived}}</h2>
+       <h3>{{messageShown}}</h3>
+       <button @click="pressed">Increment Counter via Mutation</button>
+       <br><br>
+       <big></big><i>{{counting}}</i></big> 
+       <br>
+       <big>{{showPayload}}</big>
+       <br>
+       <b><big>{{result}}</big></b>
+       <br><br><br>
+       <button @click="pressedAction">Increment Counter via Actions</button>
+       <br><br>
+       <big></big><i>{{countingAction}}</i></big> 
+       <br>
+       <big>{{showActionPayload}}</big>
+       <br>
+       <b><big>{{resultAction}}</big></b>
+    </div>
+    <script>
+        const store = new Vuex.Store({
+            state: {
+                message: "Hello from Vuex",
+                totalCount: 0,
+                count: 0,
+                payload: 13,
+                actionTotalCount: 0,
+                actionCount: 0,
+                actionPayload: 90
+            },
+            mutations:  {
+                increment(state,payload){
+                    state.count++;
+                    state.totalCount+=payload;
+                },
+                actionIncrement(state,actionPayload){
+                    state.actionCount++;
+                    state.actionTotalCount+=actionPayload;
+                }
+            },
+            actions: {
+                actionIncrement(state, actionPayload){
+                    state.commit('actionIncrement',actionPayload)
+                }
+            },
+            getters: { 
+                messageGot(state){
+                    var thisMessage = "Getters:  ";
+                    return thisMessage += state.message.toLowerCase();
+                },
+                result(state){
+                    return "result: " + state.totalCount;
+                },
+                counting(state){
+                    return "count: " + state.count;
+                },
+                showPayload(state){
+                    return "Payload: " + state.payload;
+                },
+                resultAction(state){
+                    return "result: " + state.actionTotalCount;
+                },
+                countingAction(state){
+                    return "count: " + state.actionCount;
+                },
+                showActionPayload(state){
+                    return "Payload: " + state.actionPayload;
+                }
+            }
+        });
+        new Vue({
+            el: '#app',
+            data() {
+                return{
+                    welcome: 'Hello World'
+                }
+            },
+            computed: {
+                messageReceived(){
+                    return store.state.message.toUpperCase();
+                },
+                messageShown(){
+                    return store.getters.messageGot;
+                },
+                counting(){
+                    return store.getters.counting;
+                },
+                result(){
+                    return store.getters.result;
+                },
+                showPayload(){
+                    return store.getters.showPayload;
+                },
+                countingAction(){
+                    return store.getters.countingAction;
+                },
+                resultAction(){
+                    return store.getters.resultAction;
+                },
+                showActionPayload(){
+                    return store.getters.showActionPayload;
+                }
+            },
+            methods: {
+                pressed(){
+                    store.commit('increment',store.state.payload);
+                },
+                pressedAction(){
+                    store.dispatch('actionIncrement',store.state.actionPayload);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
